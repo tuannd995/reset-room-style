@@ -71,7 +71,7 @@ export default function AffiliateDisclosurePage() {
               Your Support
             </h2>
             <p className="text-[#5A4A3A] leading-relaxed text-lg">
-              When you make a purchase through our affiliate links, you're
+              When you make a purchase through our affiliate links, you&apos;re
               supporting Room Reset Style at no extra cost to you. We appreciate
               your support, which helps us continue creating valuable content
               about bedroom styling and product recommendations.

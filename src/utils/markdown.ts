@@ -67,7 +67,7 @@ export function markdownToHtml(markdown: string): string {
         listItems = [];
       }
       // Process inline formatting in list items
-      let itemText = listMatch[1]
+      const itemText = listMatch[1]
         .replace(
           /\*\*(.*?)\*\*/gim,
           '<strong class="font-semibold text-[#2C2416]">$1</strong>'

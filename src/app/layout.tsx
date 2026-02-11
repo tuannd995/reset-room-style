@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import ProgressBar from "@/components/ProgressBar";
+import PageTransition from "@/components/PageTransition";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -38,9 +40,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="font-sans antialiased bg-[#FAF8F6]">
+        <ProgressBar />
         <div className="min-h-screen flex flex-col">
           <Header />
-          <main className="flex-1">{children}</main>
+          <PageTransition>
+            <main className="flex-1">{children}</main>
+          </PageTransition>
           <Footer />
         </div>
       </body>

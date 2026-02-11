@@ -64,9 +64,9 @@ export default function AboutPage() {
             </h2>
             <p className="text-[#5A4A3A] leading-relaxed text-lg">
               We focus on practical, achievable solutions that work for real
-              bedrooms. Whether you're working with a spacious master suite or a
-              cozy studio apartment, we provide ideas and recommendations that
-              can be adapted to your space and budget.
+              bedrooms. Whether you&apos;re working with a spacious master suite
+              or a cozy studio apartment, we provide ideas and recommendations
+              that can be adapted to your space and budget.
             </p>
 
             <p className="text-[#5A4A3A] leading-relaxed text-lg mt-8">

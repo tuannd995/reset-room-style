@@ -66,6 +66,22 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Page transition styles */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-transition-enter {
+  animation: fadeIn 0.3s ease-out;
+}
+
 /* Line clamp utilities */
 .line-clamp-2 {
   display: -webkit-box;

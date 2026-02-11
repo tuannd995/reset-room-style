@@ -29,10 +29,10 @@ export default function PrivacyPolicyPage() {
               Introduction
             </h2>
             <p className="text-[#5A4A3A] leading-relaxed text-lg">
-              Room Reset Style ("we," "our," or "us") is committed to protecting
-              your privacy. This Privacy Policy explains how we collect, use,
-              disclose, and safeguard your information when you visit our
-              website.
+              Room Reset Style (&quot;we,&quot; &quot;our,&quot; or
+              &quot;us&quot;) is committed to protecting your privacy. This
+              Privacy Policy explains how we collect, use, disclose, and
+              safeguard your information when you visit our website.
             </p>
 
             <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[#2C2416] mt-12 mb-6 pt-8 border-t border-[#D4C4B0]/30">
