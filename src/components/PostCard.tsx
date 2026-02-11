@@ -34,7 +34,7 @@ export default function PostCard({ post }: PostCardProps) {
   return (
     <Link href={`/${post.slug}`} className="block h-full no-underline">
       <Card className="h-full flex flex-col overflow-hidden group">
-        <div className="aspect-[16/9] relative overflow-hidden">
+        <div className="aspect-video relative overflow-hidden">
           <Image
             src={imageUrl}
             alt={post.title}

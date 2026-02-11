@@ -3,7 +3,6 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProgressBar from "@/components/ProgressBar";
-import PageTransition from "@/components/PageTransition";
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -43,9 +42,7 @@ export default function RootLayout({
         <ProgressBar />
         <div className="min-h-screen flex flex-col">
           <Header />
-          <PageTransition>
-            <main className="flex-1">{children}</main>
-          </PageTransition>
+          <main className="flex-1">{children}</main>
           <Footer />
         </div>
       </body>
