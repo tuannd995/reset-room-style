@@ -1,4 +1,4 @@
-import { supabase } from "./supabase";
+import { getSupabase } from "./supabase";
 import type { CategoryRow, PostRow, ProductRow } from "@/types/database";
 
 // --- App-facing types (used by pages/components) ---
@@ -6,6 +6,7 @@ export interface Category {
   id: string;
   name: string;
   slug: string;
+  image: string | null;
   created_at: string;
 }
 
@@ -44,6 +45,7 @@ function toCategory(row: CategoryRow): Category {
     id: row.id,
     name: row.name,
     slug: row.slug,
+    image: row.image ?? null,
     created_at: row.created_at,
   };
 }
@@ -97,7 +99,7 @@ export async function getLatestPosts(
   limit: number = 10
 ): Promise<{ data: PostWithCategory[]; error: Error | null }> {
   try {
-    const { data, error: postsError } = await supabase
+    const { data, error: postsError } = await getSupabase()
       .from("posts")
       .select("*")
       .eq("is_published", true)
@@ -115,9 +117,9 @@ export async function getLatestPosts(
     }
 
     const categoryIds = [...new Set(posts.map((p) => p.category_id))];
-    const { data: categories, error: catError } = await supabase
+    const { data: categories, error: catError } = await getSupabase()
       .from("categories")
-      .select("id, name, slug")
+      .select("id, name, slug, image")
       .in("id", categoryIds);
 
     if (catError) {
@@ -136,7 +138,7 @@ export async function getLatestPosts(
     const result: PostWithCategory[] = posts.map((row) =>
       toPostWithCategory(
         row,
-        categoryMap.get(row.category_id) ?? { name: "", slug: "" }
+        categoryMap.get(row.category_id) ?? DEFAULT_CATEGORY
       )
     );
 
@@ -149,6 +151,84 @@ export async function getLatestPosts(
   }
 }
 
+const DEFAULT_CATEGORY: { name: string; slug: string } = {
+  name: "",
+  slug: "",
+};
+
+/**
+ * All published posts with pagination (for /articles).
+ */
+export async function getPostsPaginated(
+  limit: number = 12,
+  offset: number = 0
+): Promise<{
+  data: PostWithCategory[];
+  total: number;
+  error: Error | null;
+}> {
+  try {
+    const {
+      data: postsData,
+      error: postsError,
+      count,
+    } = await getSupabase()
+      .from("posts")
+      .select("*", { count: "exact" })
+      .eq("is_published", true)
+      .order("created_at", { ascending: false })
+      .range(offset, offset + limit - 1);
+
+    const posts = (postsData ?? []) as PostRow[];
+
+    if (postsError) {
+      return { data: [], total: 0, error: new Error(postsError.message) };
+    }
+
+    if (!posts.length) {
+      return { data: [], total: count ?? 0, error: null };
+    }
+
+    const categoryIds = [...new Set(posts.map((p) => p.category_id))];
+    const { data: categories, error: catError } = await getSupabase()
+      .from("categories")
+      .select("id, name, slug, image")
+      .in("id", categoryIds);
+
+    if (catError) {
+      return {
+        data: [],
+        total: count ?? 0,
+        error: new Error(catError.message),
+      };
+    }
+
+    const categoryMap = new Map(
+      (categories ?? []).map(
+        (c: { id: string; name: string; slug: string }) => [
+          c.id,
+          { name: c.name, slug: c.slug },
+        ]
+      )
+    );
+
+    const result: PostWithCategory[] = posts.map((row) =>
+      toPostWithCategory(
+        row,
+        categoryMap.get(row.category_id) ?? DEFAULT_CATEGORY
+      )
+    );
+
+    return { data: result, total: count ?? 0, error: null };
+  } catch (err) {
+    return {
+      data: [],
+      total: 0,
+      error: err instanceof Error ? err : new Error("getPostsPaginated failed"),
+    };
+  }
+}
+
 /**
  * Single post by slug with category info.
  */
@@ -156,7 +236,7 @@ export async function getPostBySlug(
   slug: string
 ): Promise<{ data: PostWithCategory | null; error: Error | null }> {
   try {
-    const { data: postData, error: postError } = await supabase
+    const { data: postData, error: postError } = await getSupabase()
       .from("posts")
       .select("*")
       .eq("slug", slug)
@@ -172,9 +252,9 @@ export async function getPostBySlug(
       return { data: null, error: null };
     }
 
-    const { data: categoryData, error: catError } = await supabase
+    const { data: categoryData, error: catError } = await getSupabase()
       .from("categories")
-      .select("name, slug")
+      .select("name, slug, image")
       .eq("id", post.category_id)
       .maybeSingle();
 
@@ -208,9 +288,9 @@ export async function getPostsByCategory(
   categorySlug: string
 ): Promise<{ data: PostWithCategory[]; error: Error | null }> {
   try {
-    const { data: categoryData, error: catError } = await supabase
+    const { data: categoryData, error: catError } = await getSupabase()
       .from("categories")
-      .select("id, name, slug")
+      .select("id, name, slug, image")
       .eq("slug", categorySlug)
       .maybeSingle();
 
@@ -223,7 +303,7 @@ export async function getPostsByCategory(
       return { data: [], error: null };
     }
 
-    const { data: postsData, error: postsError } = await supabase
+    const { data: postsData, error: postsError } = await getSupabase()
       .from("posts")
       .select("*")
       .eq("category_id", category.id)
@@ -263,9 +343,9 @@ export async function getProductsByCategory(
   error: Error | null;
 }> {
   try {
-    const { data: categoryData, error: catError } = await supabase
+    const { data: categoryData, error: catError } = await getSupabase()
       .from("categories")
-      .select("id, name, slug, created_at")
+      .select("id, name, slug, image, created_at")
       .eq("slug", categorySlug)
       .maybeSingle();
 
@@ -278,7 +358,7 @@ export async function getProductsByCategory(
       return { data: [], category: null, error: null };
     }
 
-    const { data: productsData, error: productsError } = await supabase
+    const { data: productsData, error: productsError } = await getSupabase()
       .from("products")
       .select("*")
       .eq("category_id", category.id)
@@ -322,9 +402,9 @@ export async function getCategories(): Promise<{
   error: Error | null;
 }> {
   try {
-    const { data, error } = await supabase
+    const { data, error } = await getSupabase()
       .from("categories")
-      .select("id, name, slug, created_at")
+      .select("id, name, slug, image, created_at")
       .order("name", { ascending: true });
 
     if (error) {

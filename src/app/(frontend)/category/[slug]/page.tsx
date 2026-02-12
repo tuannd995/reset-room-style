@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { categories, posts } from "@/data/mockData";
+import { getSupabase, getCategories, getPostsByCategory } from "@/lib";
+import { siteName } from "@/lib/site";
 import PostCard from "@/components/PostCard";
 import SectionContainer from "@/components/ui/SectionContainer";
 
@@ -9,16 +10,17 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return categories.map((category) => ({
-    slug: category.slug,
-  }));
+  const { data } = await getSupabase().from("categories").select("slug");
+  const rows = (data ?? []) as { slug: string }[];
+  return rows.map((c) => ({ slug: c.slug }));
 }
 
 export async function generateMetadata({
   params,
 }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const category = categories.find((c) => c.slug === slug);
+  const { data: dbCategories } = await getCategories();
+  const category = (dbCategories ?? []).find((c) => c.slug === slug);
 
   if (!category) {
     return {
@@ -26,40 +28,44 @@ export async function generateMetadata({
     };
   }
 
+  const description = `Browse our articles and guides about ${category.name}. Bedroom styling, decor, and inspiration from ${siteName}.`;
+
   return {
     title: category.name,
-    description: category.description,
+    description,
+    openGraph: {
+      title: category.name,
+      description,
+    },
   };
 }
 
 export default async function CategoryPage({ params }: PageProps) {
   const { slug } = await params;
-  const category = categories.find((c) => c.slug === slug);
 
-  if (!category) {
+  const { data: dbCategories } = await getCategories();
+  const dbCategory = (dbCategories ?? []).find((c) => c.slug === slug);
+
+  if (!dbCategory) {
     notFound();
   }
 
-  const categoryPosts = posts.filter((post) => post.category === slug);
+  const { data: dbPosts } = await getPostsByCategory(slug);
+  const posts = dbPosts ?? [];
 
   return (
     <div className="bg-[#FAF8F6]">
-      {/* Header */}
       <SectionContainer variant="gradient">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-[#2C2416] mb-6 text-center">
-          {category.name}
+          {dbCategory.name}
         </h1>
-        <p className="text-xl text-[#5A4A3A] max-w-3xl mx-auto text-center leading-relaxed">
-          {category.description}
-        </p>
       </SectionContainer>
 
-      {/* Posts Grid */}
       <SectionContainer variant="default">
-        {categoryPosts.length > 0 ? (
+        {posts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {categoryPosts.map((post) => (
-              <PostCard key={post.slug} post={post} />
+            {posts.map((post) => (
+              <PostCard key={post.id} post={post} />
             ))}
           </div>
         ) : (

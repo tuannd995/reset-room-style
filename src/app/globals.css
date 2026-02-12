@@ -126,7 +126,6 @@ h6 {
 
 /* Link hover animation */
 a {
-  position: relative;
   transition: color 0.3s ease-in-out;
 }
 
@@ -134,8 +133,12 @@ a:hover {
   color: #2c2416;
 }
 
-/* Underline animation for links */
-a:not(.no-underline)::after {
+/* Bottom border only for text links (not button-styled links) */
+a.link {
+  position: relative;
+}
+
+a.link::after {
   content: "";
   position: absolute;
   width: 0;
@@ -146,7 +149,7 @@ a:not(.no-underline)::after {
   transition: width 0.3s ease-in-out;
 }
 
-a:not(.no-underline):hover::after {
+a.link:hover::after {
   width: 100%;
 }
 

@@ -1,6 +1,14 @@
 import Link from "next/link";
+import type { Category } from "@/lib";
 
-export default function Footer() {
+const linkClass =
+  "link text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300";
+
+interface FooterProps {
+  categories: Category[];
+}
+
+export default function Footer({ categories }: FooterProps) {
   return (
     <footer className="bg-[#F5F3F0] border-t border-[#D4C4B0]/30 mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
@@ -18,64 +26,30 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold text-[#2C2416] mb-4">Categories</h4>
             <ul className="space-y-3">
-              <li>
-                <Link
-                  href="/category/bedroom-lighting"
-                  className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300"
-                >
-                  Bedroom Lighting
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/category/bedding"
-                  className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300"
-                >
-                  Bedding
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/category/small-bedroom"
-                  className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300"
-                >
-                  Small Bedroom
-                </Link>
-              </li>
-              <li>
-                <Link
-                  href="/category/storage"
-                  className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300"
-                >
-                  Storage
-                </Link>
-              </li>
+              {categories.map((cat) => (
+                <li key={cat.id}>
+                  <Link href={`/category/${cat.slug}`} className={linkClass}>
+                    {cat.name}
+                  </Link>
+                </li>
+              ))}
             </ul>
           </div>
           <div>
             <h4 className="font-semibold text-[#2C2416] mb-4">Legal</h4>
             <ul className="space-y-3">
               <li>
-                <Link
-                  href="/about"
-                  className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300"
-                >
+                <Link href="/about" className={linkClass}>
                   About
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/privacy-policy"
-                  className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300"
-                >
+                <Link href="/privacy-policy" className={linkClass}>
                   Privacy Policy
                 </Link>
               </li>
               <li>
-                <Link
-                  href="/affiliate-disclosure"
-                  className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300"
-                >
+                <Link href="/affiliate-disclosure" className={linkClass}>
                   Affiliate Disclosure
                 </Link>
               </li>

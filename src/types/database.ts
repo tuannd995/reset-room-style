@@ -5,6 +5,11 @@
 export interface Database {
   public: {
     Tables: {
+      profiles: {
+        Row: ProfileRow;
+        Insert: Omit<ProfileRow, "created_at"> & { created_at?: string };
+        Update: Partial<Omit<ProfileRow, "id">>;
+      };
       categories: {
         Row: CategoryRow;
         Insert: Omit<CategoryRow, "created_at"> & { created_at?: string };
@@ -31,10 +36,18 @@ export interface Database {
   };
 }
 
+export interface ProfileRow {
+  id: string;
+  email: string | null;
+  role: string;
+  created_at: string;
+}
+
 export interface CategoryRow {
   id: string;
   name: string;
   slug: string;
+  image: string | null;
   created_at: string;
 }
 

@@ -1,8 +1,9 @@
-export { supabase } from "./supabase";
+export { getSupabase } from "./supabase";
 export {
   getLatestPosts,
   getPostBySlug,
   getPostsByCategory,
+  getPostsPaginated,
   getProductsByCategory,
   getCategories,
   type Category,

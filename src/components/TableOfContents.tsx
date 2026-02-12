@@ -85,7 +85,7 @@ export default function TableOfContents({ content }: TableOfContentsProps) {
                       });
                     }
                   }}
-                  className={`block text-sm transition-colors duration-300 ${
+                  className={`link block text-sm transition-colors duration-300 ${
                     heading.level === 2
                       ? "font-semibold text-[#2C2416]"
                       : "font-normal text-[#5A4A3A] pl-4"

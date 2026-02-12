@@ -6,18 +6,21 @@ const supabaseAnonKey =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ||
   process.env.SUPABASE_PUBLISHABLE_KEY;
 
-/**
- * Supabase client for server and client.
- * Uses NEXT_PUBLIC_SUPABASE_ANON_KEY or SUPABASE_PUBLISHABLE_KEY.
- * Throws at first use if env vars are missing.
- */
-function getSupabase(): SupabaseClient<Database> {
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error(
-      "Missing Supabase env: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_PUBLISHABLE_KEY)"
-    );
-  }
-  return createClient<Database>(supabaseUrl, supabaseAnonKey);
-}
+let _client: SupabaseClient<Database> | null = null;
 
-export const supabase = getSupabase();
+/**
+ * Supabase client for server and client (lazy init).
+ * Uses NEXT_PUBLIC_SUPABASE_ANON_KEY or SUPABASE_PUBLISHABLE_KEY.
+ * Throws only when first used if env vars are missing.
+ */
+export function getSupabase(): SupabaseClient<Database> {
+  if (!_client) {
+    if (!supabaseUrl || !supabaseAnonKey) {
+      throw new Error(
+        "Missing Supabase env: set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY (or SUPABASE_PUBLISHABLE_KEY)"
+      );
+    }
+    _client = createClient<Database>(supabaseUrl, supabaseAnonKey);
+  }
+  return _client;
+}

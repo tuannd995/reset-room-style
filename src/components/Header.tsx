@@ -1,6 +1,14 @@
 import Link from "next/link";
+import type { Category } from "@/lib";
 
-export default function Header() {
+const linkClass =
+  "link text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300 font-medium";
+
+interface HeaderProps {
+  categories: Category[];
+}
+
+export default function Header({ categories }: HeaderProps) {
   return (
     <header className="sticky top-0 z-50 bg-[#FAF8F6]/80 backdrop-blur-md border-b border-[#D4C4B0]/30 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -12,40 +20,19 @@ export default function Header() {
             Room Reset Style
           </Link>
           <nav className="hidden md:flex items-center space-x-10">
-            <Link
-              href="/"
-              className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300 font-medium"
-            >
+            <Link href="/" className={linkClass}>
               Home
             </Link>
-            <Link
-              href="/category/bedroom-lighting"
-              className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300 font-medium"
-            >
-              Lighting
-            </Link>
-            <Link
-              href="/category/bedding"
-              className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300 font-medium"
-            >
-              Bedding
-            </Link>
-            <Link
-              href="/category/small-bedroom"
-              className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300 font-medium"
-            >
-              Small Bedroom
-            </Link>
-            <Link
-              href="/category/storage"
-              className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300 font-medium"
-            >
-              Storage
-            </Link>
-            <Link
-              href="/about"
-              className="text-[#5A4A3A] hover:text-[#2C2416] transition-colors duration-300 font-medium"
-            >
+            {categories.map((cat) => (
+              <Link
+                key={cat.id}
+                href={`/category/${cat.slug}`}
+                className={linkClass}
+              >
+                {cat.name}
+              </Link>
+            ))}
+            <Link href="/about" className={linkClass}>
               About
             </Link>
           </nav>

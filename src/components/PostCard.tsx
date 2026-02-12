@@ -1,42 +1,25 @@
 import Link from "next/link";
-import Image from "next/image";
-import { Post } from "@/types";
 import Card from "./ui/Card";
 import Badge from "./ui/Badge";
+import DbImage from "./ui/DbImage";
+import type { PostWithCategory } from "@/lib";
 
 interface PostCardProps {
-  post: Post;
+  post: PostWithCategory;
 }
 
-const postImages: Record<string, string> = {
-  "10-cozy-bedroom-lighting-ideas":
-    "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=2058",
-  "best-bedding-materials-guide":
-    "https://images.unsplash.com/photo-1631889993954-3b055f447d3a?q=80&w=2070",
-  "small-bedroom-design-tips":
-    "https://images.unsplash.com/photo-1554995207-c18c203602cb?q=80&w=2070",
-  "bedroom-storage-solutions":
-    "https://images.unsplash.com/photo-1556912172-45b7abe8b7e1?q=80&w=2070",
-  "ambient-lighting-bedroom":
-    "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?q=80&w=2070",
-  "luxury-bedding-on-budget":
-    "https://images.unsplash.com/photo-1616628188467-8c1cbfe0c8a3?q=80&w=2070",
-};
+function readTimeMinutes(content: string): number {
+  const words = content ? content.trim().split(/\s+/).length : 0;
+  return Math.max(1, Math.round(words / 220));
+}
 
 export default function PostCard({ post }: PostCardProps) {
-  const imageUrl =
-    postImages[post.slug] ||
-    "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=2070";
-  const categoryName = post.category
-    .replace("-", " ")
-    .replace(/\b\w/g, (l) => l.toUpperCase());
-
   return (
     <Link href={`/${post.slug}`} className="block h-full no-underline">
       <Card className="h-full flex flex-col overflow-hidden group">
         <div className="aspect-video relative overflow-hidden">
-          <Image
-            src={imageUrl}
+          <DbImage
+            src={post.featured_image || undefined}
             alt={post.title}
             fill
             className="object-cover transition-transform duration-500 ease-in-out group-hover:scale-105"
@@ -45,7 +28,7 @@ export default function PostCard({ post }: PostCardProps) {
         </div>
         <div className="p-6 flex-1 flex flex-col">
           <div className="mb-3">
-            <Badge>{categoryName}</Badge>
+            <Badge>{post.category.name}</Badge>
           </div>
           <h2 className="text-xl font-serif font-semibold text-[#2C2416] mb-3 group-hover:text-[#8B7355] transition-colors duration-300 line-clamp-2">
             {post.title}
@@ -55,13 +38,15 @@ export default function PostCard({ post }: PostCardProps) {
           </p>
           <div className="flex items-center justify-between text-xs text-[#8B7355] mt-auto pt-4 border-t border-[#D4C4B0]/30">
             <span>
-              {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                month: "long",
-                day: "numeric",
-                year: "numeric",
-              })}
+              {post.created_at
+                ? new Date(post.created_at).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })
+                : null}
             </span>
-            <span>{post.readTime} min read</span>
+            <span>{readTimeMinutes(post.content)} min read</span>
           </div>
         </div>
       </Card>
