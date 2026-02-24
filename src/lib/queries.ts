@@ -7,6 +7,7 @@ export interface Category {
   name: string;
   slug: string;
   image: string | null;
+  desc: string | null;
   created_at: string;
 }
 
@@ -46,6 +47,7 @@ function toCategory(row: CategoryRow): Category {
     name: row.name,
     slug: row.slug,
     image: row.image ?? null,
+    desc: row.desc ?? null,
     created_at: row.created_at,
   };
 }
@@ -290,7 +292,7 @@ export async function getPostsByCategory(
   try {
     const { data: categoryData, error: catError } = await getSupabase()
       .from("categories")
-      .select("id, name, slug, image")
+      .select("id, name, slug, image, desc")
       .eq("slug", categorySlug)
       .maybeSingle();
 
@@ -345,7 +347,7 @@ export async function getProductsByCategory(
   try {
     const { data: categoryData, error: catError } = await getSupabase()
       .from("categories")
-      .select("id, name, slug, image, created_at")
+      .select("id, name, slug, image, desc, created_at")
       .eq("slug", categorySlug)
       .maybeSingle();
 
@@ -395,6 +397,110 @@ export async function getProductsByCategory(
 }
 
 /**
+ * All products with category info (for /products list).
+ */
+export async function getProducts(): Promise<{
+  data: ProductWithCategory[];
+  error: Error | null;
+}> {
+  try {
+    const { data: productsData, error: productsError } = await getSupabase()
+      .from("products")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (productsError) {
+      return { data: [], error: new Error(productsError.message) };
+    }
+
+    const products = (productsData ?? []) as ProductRow[];
+    if (!products.length) {
+      return { data: [], error: null };
+    }
+
+    const categoryIds = [...new Set(products.map((p) => p.category_id))];
+    const { data: categories, error: catError } = await getSupabase()
+      .from("categories")
+      .select("id, name, slug")
+      .in("id", categoryIds);
+
+    if (catError) {
+      return { data: [], error: new Error(catError.message) };
+    }
+
+    const categoryMap = new Map(
+      (categories ?? []).map(
+        (c: { id: string; name: string; slug: string }) => [
+          c.id,
+          { name: c.name, slug: c.slug },
+        ]
+      )
+    );
+
+    const result: ProductWithCategory[] = products.map((row) =>
+      toProductWithCategory(row, categoryMap.get(row.category_id) ?? null)
+    );
+    return { data: result, error: null };
+  } catch (err) {
+    return {
+      data: [],
+      error: err instanceof Error ? err : new Error("getProducts failed"),
+    };
+  }
+}
+
+/**
+ * Single product by slug with category info.
+ */
+export async function getProductBySlug(
+  slug: string
+): Promise<{ data: ProductWithCategory | null; error: Error | null }> {
+  try {
+    const { data: productData, error: productError } = await getSupabase()
+      .from("products")
+      .select("*")
+      .eq("slug", slug)
+      .maybeSingle();
+
+    if (productError) {
+      return { data: null, error: new Error(productError.message) };
+    }
+
+    const product = productData as ProductRow | null;
+    if (!product) {
+      return { data: null, error: null };
+    }
+
+    const { data: categoryData, error: catError } = await getSupabase()
+      .from("categories")
+      .select("name, slug")
+      .eq("id", product.category_id)
+      .maybeSingle();
+
+    if (catError) {
+      return { data: null, error: new Error(catError.message) };
+    }
+
+    const categoryInfo = categoryData
+      ? {
+          name: (categoryData as { name: string; slug: string }).name,
+          slug: (categoryData as { name: string; slug: string }).slug,
+        }
+      : null;
+
+    return {
+      data: toProductWithCategory(product, categoryInfo),
+      error: null,
+    };
+  } catch (err) {
+    return {
+      data: null,
+      error: err instanceof Error ? err : new Error("getProductBySlug failed"),
+    };
+  }
+}
+
+/**
  * All categories (for nav/footer).
  */
 export async function getCategories(): Promise<{
@@ -404,7 +510,7 @@ export async function getCategories(): Promise<{
   try {
     const { data, error } = await getSupabase()
       .from("categories")
-      .select("id, name, slug, image, created_at")
+      .select("id, name, slug, image, desc, created_at")
       .order("name", { ascending: true });
 
     if (error) {

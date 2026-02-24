@@ -10,7 +10,9 @@ import {
 import PostCard from "@/components/PostCard";
 import ProductBox from "@/components/ProductBox";
 import TableOfContents from "@/components/TableOfContents";
+import AffiliateCallout from "@/components/AffiliateCallout";
 import DbImage from "@/components/ui/DbImage";
+import { siteName } from "@/lib/site";
 import { markdownToHtml } from "@/utils/markdown";
 import type { Product as LegacyProduct } from "@/types";
 import type { PostWithCategory, ProductWithCategory } from "@/lib";
@@ -106,8 +108,38 @@ export default async function PostPage({ params }: PageProps) {
     )
   );
 
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL || "https://resethomestyle.com";
+  const articleUrl = `${baseUrl}/${postData.slug}`;
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: postData.title,
+    description: postData.seo_description || postData.excerpt,
+    image: postData.featured_image
+      ? [postData.featured_image]
+      : undefined,
+    datePublished: postData.created_at,
+    dateModified: postData.updated_at || postData.created_at,
+    author: {
+      "@type": "Organization",
+      name: siteName,
+      url: baseUrl,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: siteName,
+      url: baseUrl,
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": articleUrl },
+  };
+
   return (
     <article className="bg-[#FAF8F6]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
       {/* Hero Section */}
       <div className="bg-gradient-to-br from-[#F5F3F0] to-[#FAF8F6] py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -135,7 +167,7 @@ export default async function PostPage({ params }: PageProps) {
             )}
             <span>{readTime} min read</span>
             <span>•</span>
-            <span>By Room Reset Style</span>
+            <span>By {siteName}</span>
           </div>
         </div>
       </div>
@@ -167,20 +199,20 @@ export default async function PostPage({ params }: PageProps) {
           {/* Main Content */}
           <div className="lg:col-span-3">
             <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-8 md:p-12">
+              <AffiliateCallout />
               <div
                 className="prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: htmlContent }}
               />
-
-              {/* Product Box Example */}
               {featuredProduct && <ProductBox product={featuredProduct} />}
+              <AffiliateCallout />
             </div>
 
             {/* Related Posts */}
             {relatedPosts.length > 0 && (
               <section className="mt-20 pt-16 border-t border-[#D4C4B0]/30">
                 <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[#2C2416] mb-10 text-center">
-                  Related Articles
+                  Related Guides
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                   {relatedPosts.map((p) => (

@@ -15,12 +15,12 @@ export default function Footer({ categories }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
           <div className="col-span-1 md:col-span-2">
             <h3 className="text-2xl font-serif font-semibold text-[#2C2416] mb-4">
-              Room Reset Style
+              Reset Homestyle
             </h3>
             <p className="text-[#5A4A3A] mb-4 max-w-md leading-relaxed">
-              Your guide to creating the perfect bedroom sanctuary. Discover
-              cozy styling tips, product recommendations, and inspiration for
-              transforming your space.
+              A practical resource for optimizing small living spaces, with a
+              focus on compact home office design. Space-saving desks, ergonomic
+              chairs, and setup guides for productive workspaces.
             </p>
           </div>
           <div>
@@ -38,6 +38,11 @@ export default function Footer({ categories }: FooterProps) {
           <div>
             <h4 className="font-semibold text-[#2C2416] mb-4">Legal</h4>
             <ul className="space-y-3">
+              <li>
+                <Link href="/products" className={linkClass}>
+                  Products
+                </Link>
+              </li>
               <li>
                 <Link href="/about" className={linkClass}>
                   About
@@ -58,7 +63,7 @@ export default function Footer({ categories }: FooterProps) {
         </div>
         <div className="mt-12 pt-8 border-t border-[#D4C4B0]/30 text-center text-[#8B7355]">
           <p>
-            &copy; {new Date().getFullYear()} Room Reset Style. All rights
+            &copy; {new Date().getFullYear()} Reset Homestyle. All rights
             reserved.
           </p>
         </div>

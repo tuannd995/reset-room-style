@@ -51,9 +51,20 @@ export default function ProductBox({ product }: ProductBoxProps) {
             </ul>
           )}
           <div className="mt-auto">
-            <Button size="lg" className="w-full md:w-auto">
-              View on Amazon
-            </Button>
+            {product.affiliateLink ? (
+              <a
+                href={product.affiliateLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center justify-center px-8 py-4 text-base font-semibold rounded-lg bg-[#2C2416] text-white hover:bg-[#8B7355] transition-colors duration-300 w-full md:w-auto"
+              >
+                View on Amazon
+              </a>
+            ) : (
+              <Button size="lg" className="w-full md:w-auto">
+                View on Amazon
+              </Button>
+            )}
           </div>
         </div>
       </div>

@@ -11,12 +11,12 @@ export const metadata: Metadata = {
   title: "Articles",
   description:
     siteDescription ||
-    "All articles on bedroom styling, decor, lighting, bedding, and storage ideas.",
+    "Practical guides on space-saving desks, ergonomic chairs, and small home office setup.",
   openGraph: {
     title: "Articles",
     description:
       siteDescription ||
-      "All articles on bedroom styling, decor, lighting, bedding, and storage ideas.",
+      "Practical guides on space-saving desks, ergonomic chairs, and small home office setup.",
   },
 };
 
@@ -54,7 +54,7 @@ export default async function ArticlesPage({ searchParams }: PageProps) {
           Articles
         </h1>
         <p className="text-xl text-[#5A4A3A] max-w-2xl mx-auto text-center">
-          All our guides and inspiration for your bedroom.
+          Practical guides for small home offices and productive workspaces.
         </p>
       </SectionContainer>
 

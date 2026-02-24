@@ -5,6 +5,8 @@ export {
   getPostsByCategory,
   getPostsPaginated,
   getProductsByCategory,
+  getProducts,
+  getProductBySlug,
   getCategories,
   type Category,
   type PostWithCategory,

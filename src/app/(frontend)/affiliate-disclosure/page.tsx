@@ -3,7 +3,8 @@ import SectionContainer from "@/components/ui/SectionContainer";
 
 export const metadata: Metadata = {
   title: "Affiliate Disclosure",
-  description: "Affiliate disclosure for Room Reset Style website.",
+  description:
+    "Affiliate disclosure for Reset Homestyle. How we use affiliate links and our commitment to transparent, research-based recommendations for small home office products.",
 };
 
 export default function AffiliateDisclosurePage() {
@@ -29,32 +30,31 @@ export default function AffiliateDisclosurePage() {
               Affiliate Relationships
             </h2>
             <p className="text-[#5A4A3A] leading-relaxed text-lg">
-              Room Reset Style participates in various affiliate marketing
-              programs, which means we may earn commissions on purchases made
-              through our links to retailer sites. This includes, but is not
-              limited to, the Amazon Associates program.
+              Reset Homestyle participates in affiliate marketing programs,
+              including the Amazon Associates program. When you click certain
+              links on our site and make a purchase, we may earn a small
+              commission at no additional cost to you.
             </p>
 
             <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[#2C2416] mt-12 mb-6 pt-8 border-t border-[#D4C4B0]/30">
-              How Affiliate Links Work
+              How This Supports Our Work
             </h2>
             <p className="text-[#5A4A3A] leading-relaxed text-lg">
-              When you click on an affiliate link on our website and make a
-              purchase, we may receive a small commission at no additional cost
-              to you. These commissions help support the operation of Room Reset
-              Style and allow us to continue providing free content and
-              recommendations.
+              Commissions help us run Reset Homestyle and continue providing
+              free guides on small home office solutions — from space-saving
+              desks and ergonomic chairs to layout ideas and productivity
+              setups. We only recommend products we believe are useful for
+              compact workspaces.
             </p>
 
             <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[#2C2416] mt-12 mb-6 pt-8 border-t border-[#D4C4B0]/30">
               Our Recommendations
             </h2>
             <p className="text-[#5A4A3A] leading-relaxed text-lg">
-              Our product recommendations are based on our research, expertise,
-              and genuine belief in the products we feature. We only recommend
-              products that we believe will be valuable to our readers,
-              regardless of affiliate relationships. The presence of an
-              affiliate link does not influence our editorial content or product
+              Our recommendations are based on research, dimensions, and
+              real-world use. Affiliate relationships do not influence which
+              products we feature or how we review them. The presence of an
+              affiliate link does not change our editorial content or product
               selection.
             </p>
 
@@ -62,28 +62,10 @@ export default function AffiliateDisclosurePage() {
               Transparency
             </h2>
             <p className="text-[#5A4A3A] leading-relaxed text-lg">
-              We are committed to transparency and will always disclose when we
-              use affiliate links. You can identify affiliate links by looking
-              for disclosure notices on product pages or within article content.
-            </p>
-
-            <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[#2C2416] mt-12 mb-6 pt-8 border-t border-[#D4C4B0]/30">
-              Your Support
-            </h2>
-            <p className="text-[#5A4A3A] leading-relaxed text-lg">
-              When you make a purchase through our affiliate links, you&apos;re
-              supporting Room Reset Style at no extra cost to you. We appreciate
-              your support, which helps us continue creating valuable content
-              about bedroom styling and product recommendations.
-            </p>
-
-            <h2 className="text-3xl md:text-4xl font-serif font-semibold text-[#2C2416] mt-12 mb-6 pt-8 border-t border-[#D4C4B0]/30">
-              Questions
-            </h2>
-            <p className="text-[#5A4A3A] leading-relaxed text-lg">
-              If you have any questions about our affiliate relationships or
-              this disclosure, please feel free to contact us through our
-              website.
+              We disclose affiliate links in articles and on product sections.
+              When you make a purchase through our links, you support Reset
+              Homestyle at no extra cost to you. If you have questions about
+              this disclosure, you can reach us through our website.
             </p>
           </div>
         </div>

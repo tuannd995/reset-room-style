@@ -48,6 +48,7 @@ export interface CategoryRow {
   name: string;
   slug: string;
   image: string | null;
+  desc: string | null;
   created_at: string;
 }
 

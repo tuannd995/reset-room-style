@@ -28,7 +28,9 @@ export async function generateMetadata({
     };
   }
 
-  const description = `Browse our articles and guides about ${category.name}. Bedroom styling, decor, and inspiration from ${siteName}.`;
+  const description =
+    category.desc?.trim() ||
+    `Browse our articles and guides about ${category.name}. Small home office solutions from ${siteName}.`;
 
   return {
     title: category.name,
@@ -62,6 +64,13 @@ export default async function CategoryPage({ params }: PageProps) {
       </SectionContainer>
 
       <SectionContainer variant="default">
+        {dbCategory.desc?.trim() ? (
+          <div className="max-w-3xl mx-auto mb-12 p-6 md:p-8 bg-white rounded-2xl shadow-md">
+            <p className="text-[#5A4A3A] text-lg leading-relaxed whitespace-pre-line">
+              {dbCategory.desc.trim()}
+            </p>
+          </div>
+        ) : null}
         {posts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {posts.map((post) => (

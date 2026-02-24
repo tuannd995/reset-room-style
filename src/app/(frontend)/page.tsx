@@ -9,21 +9,28 @@ import { getCategories, getLatestPosts, getProductsByCategory } from "@/lib";
 import type { ProductWithCategory } from "@/lib";
 
 export const metadata: Metadata = {
-  title: "Home",
+  title: "Small Home Office Solutions | Reset Homestyle",
   description:
-    "Discover cozy bedroom styling tips, curated product recommendations, and inspiration to transform your space into a peaceful sanctuary.",
+    "Discover smart solutions for small home offices. Explore space-saving desks, ergonomic chairs, and practical setup guides designed for compact workspaces.",
+  keywords: [
+    "small home office solutions",
+    "space-saving desks",
+    "ergonomic chairs for small spaces",
+  ],
 };
 
 export default async function Home() {
-  const [{ data: dbCategories }, { data: dbPosts }, { data: dbProducts }] =
-    await Promise.all([
-      getCategories(),
-      getLatestPosts(6),
-      getProductsByCategory("bedding", 3, 0),
-    ]);
+  const [{ data: dbCategories }, { data: dbPosts }] = await Promise.all([
+    getCategories(),
+    getLatestPosts(6),
+  ]);
 
   const categories = dbCategories ?? [];
   const latestPosts = dbPosts ?? [];
+  const firstCategorySlug = categories[0]?.slug;
+  const { data: dbProducts } = firstCategorySlug
+    ? await getProductsByCategory(firstCategorySlug, 3, 0)
+    : { data: [] };
   const featuredProducts: ProductWithCategory[] = dbProducts ?? [];
 
   return (
@@ -33,7 +40,7 @@ export default async function Home() {
       {/* Category Grid */}
       <SectionContainer variant="default">
         <h2 className="text-4xl md:text-5xl font-serif font-semibold text-[#2C2416] mb-12 text-center">
-          Explore Categories
+          Explore Guides by Topic
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {categories.map((category) => (
@@ -45,7 +52,7 @@ export default async function Home() {
       {/* Latest Articles */}
       <SectionContainer variant="light">
         <h2 className="text-4xl md:text-5xl font-serif font-semibold text-[#2C2416] mb-12 text-center">
-          Latest Articles
+          Latest Guides
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {latestPosts.map((post) => (
@@ -57,7 +64,7 @@ export default async function Home() {
       {/* Featured Products */}
       <SectionContainer variant="default">
         <h2 className="text-4xl md:text-5xl font-serif font-semibold text-[#2C2416] mb-12 text-center">
-          Featured Products
+          Recommended for Small Offices
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {featuredProducts.map((product) => (
