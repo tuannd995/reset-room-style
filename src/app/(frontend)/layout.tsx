@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ProgressBar from "@/components/ProgressBar";
 import { getCategories } from "@/lib";
+export const revalidate = 300; // 5 minutes
 
 export default async function FrontendLayout({
   children,

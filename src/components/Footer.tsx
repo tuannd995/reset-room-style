@@ -39,11 +39,6 @@ export default function Footer({ categories }: FooterProps) {
             <h4 className="font-semibold text-[#2C2416] mb-4">Legal</h4>
             <ul className="space-y-3">
               <li>
-                <Link href="/products" className={linkClass}>
-                  Products
-                </Link>
-              </li>
-              <li>
                 <Link href="/about" className={linkClass}>
                   About
                 </Link>

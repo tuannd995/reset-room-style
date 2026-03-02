@@ -40,9 +40,6 @@ export default function Header({ categories }: HeaderProps) {
                 {cat.name}
               </Link>
             ))}
-            <Link href="/products" className={linkClass}>
-              Products
-            </Link>
             <Link href="/about" className={linkClass}>
               About
             </Link>
@@ -117,15 +114,6 @@ export default function Header({ categories }: HeaderProps) {
                 </Link>
               </li>
             ))}
-            <li>
-              <Link
-                href="/products"
-                className={mobileLinkClass}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Products
-              </Link>
-            </li>
             <li>
               <Link
                 href="/about"

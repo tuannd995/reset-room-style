@@ -1,7 +1,7 @@
 "use client";
 
-import { List, useTable } from "@refinedev/antd";
-import { Table } from "antd";
+import { List, useTable, EditButton, DeleteButton } from "@refinedev/antd";
+import { Table, Space } from "antd";
 
 export default function ProductListPage() {
   const { tableProps } = useTable({
@@ -19,6 +19,23 @@ export default function ProductListPage() {
           ellipsis
         />
         <Table.Column dataIndex="created_at" title="Created" />
+        <Table.Column
+          title="Actions"
+          dataIndex="actions"
+          key="actions"
+          render={(_, record: { id: string }) => (
+            <Space>
+              <EditButton size="small" recordItemId={record.id} />
+              <DeleteButton
+                size="small"
+                recordItemId={record.id}
+                confirmTitle="Delete this product?"
+                confirmOkText="Yes, delete"
+                confirmCancelText="Cancel"
+              />
+            </Space>
+          )}
+        />
       </Table>
     </List>
   );
