@@ -192,6 +192,70 @@ export function markdownToHtml(markdown: string): string {
       continue;
     }
 
+    // GFM table: | col1 | col2 | ... then | --- | --- | then data rows
+    if (/^\|.+\|$/.test(trimmed)) {
+      const tableRows: string[] = [];
+      while (i < lines.length && /^\|.+\|$/.test(lines[i].trim())) {
+        tableRows.push(lines[i].trim());
+        i++;
+      }
+      if (tableRows.length >= 2) {
+        const parseRow = (row: string): string[] => {
+          const cells = row.split("|").map((c) => c.trim());
+          const from = cells[0] === "" ? 1 : 0;
+          const to =
+            cells[cells.length - 1] === "" ? cells.length - 1 : cells.length;
+          return cells.slice(from, to);
+        };
+        const headerCells = parseRow(tableRows[0]);
+        const separatorRow = tableRows[1];
+        const sepCells = parseRow(separatorRow);
+        const isSeparator =
+          sepCells.length === headerCells.length &&
+          sepCells.every((cell) => /^[\s\-:]+$/.test(cell));
+        const bodyRows = isSeparator ? tableRows.slice(2) : tableRows.slice(1);
+        const theadCells = headerCells
+          .map(
+            (c) =>
+              `<th class="px-4 py-3 text-left font-semibold text-[#2C2416] border border-[#D4C4B0] bg-[#F5F3F0]">${processInline(
+                c
+              )}</th>`
+          )
+          .join("");
+        const thead = `<thead><tr>${theadCells}</tr></thead>`;
+        const tbodyRows = bodyRows.map((row) => {
+          const cells = parseRow(row);
+          const tds = cells
+            .map(
+              (c) =>
+                `<td class="px-4 py-3 text-[#5A4A3A] border border-[#D4C4B0]">${processInline(
+                  c
+                )}</td>`
+            )
+            .join("");
+          return `<tr>${tds}</tr>`;
+        });
+        const tbody = tbodyRows.length
+          ? `<tbody>${tbodyRows.join("")}</tbody>`
+          : "";
+        out.push(
+          `<div class="my-6 overflow-x-auto rounded-lg border border-[#D4C4B0]"><table class="w-full border-collapse text-sm">${thead}${tbody}</table></div>`
+        );
+        continue;
+      }
+      // Single row that looks like table: treat as paragraph
+      if (tableRows.length === 1) {
+        const paraContent = processInline(
+          tableRows[0].replace(/\|/g, " ").trim()
+        );
+        out.push(
+          `<p class="mb-6 text-[#5A4A3A] leading-relaxed text-lg">${paraContent}</p>`
+        );
+        i++;
+        continue;
+      }
+    }
+
     // Empty line: paragraph boundary
     if (trimmed === "") {
       i++;
@@ -207,6 +271,7 @@ export function markdownToHtml(markdown: string): string {
       !/^[\-\*] /.test(lines[i]) &&
       !/^\d+\. /.test(lines[i]) &&
       !/^> ?/.test(lines[i]) &&
+      !/^\|.+\|$/.test(lines[i].trim()) &&
       !lines[i].trim().startsWith("{{CODE_BLOCK_") &&
       !/^!\[.*\]\(.*\)$/.test(lines[i].trim())
     ) {
